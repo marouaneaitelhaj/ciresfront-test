@@ -46,7 +46,6 @@ export default function LoginPage() {
             <h2 className="text-4xl font-bold text-gray-900 mb-2">Welcome back</h2>
             <p className="text-gray-600">Welcome back, Please enter your details</p>
           </div>
-
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
             <div className="space-y-4">
               <Input
@@ -103,7 +102,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right side - Testimonial */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/30 z-10" />
         <img

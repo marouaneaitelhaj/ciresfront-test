@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Heart, MessageCircle, Bookmark } from 'lucide-react';
+import { Level } from "level";
 
 type PostProps = {
   image: string;
@@ -18,11 +19,17 @@ export function GalleryItem({
   data, 
   username 
 }: PostProps) {
-  const likes = data.find(item => item.id === id)?.likedBy.length || 0;
+  const initialLikes = data.find(item => item.id === id)?.likedBy.length || 0;
+  const [liked, setLiked] = useState<boolean>(false);
+  const [likes, setLikes] = useState<number>(initialLikes);
+  const db = new Level<string, any>("./db", {valueEncoding: "json"});
   const views = Math.floor(Math.random() * 50) + 10; // Simulated views in thousands
 
+  const onLike = async () => {
+  };
+
   return (
-    <div className="group relative rounded-xl overflow-hidden  shadow-sm hover:shadow-md transition-shadow duration-300">
+    <div className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
       {/* Save button */}
       <button className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white">
         <Bookmark className="w-4 h-4 text-gray-700" />
@@ -43,28 +50,28 @@ export function GalleryItem({
         {/* User info and stats */}
         <div className="flex items-center justify-between text-black">
           <div className="flex items-center space-x-2">
-        <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-medium">
-          {username?.[0]?.toUpperCase() || 'U'}
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium leading-tight">
-            {username || 'Anonymous'}
-          </span>
-          <span className="text-xs text-black/80">
-            {description.slice(0, 20)}{description.length > 20 ? '...' : ''}
-          </span>
-        </div>
+            <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-medium">
+              {username?.[0]?.toUpperCase() || 'U'}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium leading-tight">
+                {username || 'Anonymous'}
+              </span>
+              <span className="text-xs text-black/80">
+                {description.slice(0, 20)}{description.length > 20 ? '...' : ''}
+              </span>
+            </div>
           </div>
           
           <div className="flex items-center space-x-3 text-black/90">
-        <span className="flex items-center text-sm">
-          <Heart className="w-4 h-4 mr-1" />
-          {likes}
-        </span>
-        <span className="flex items-center text-sm">
-          <MessageCircle className="w-4 h-4 mr-1" />
-          {views}k
-        </span>
+            <button onClick={onLike} className="flex items-center text-sm">
+              <Heart className={`w-4 h-4 mr-1 ${liked ? 'text-red-500' : ''}`} />
+              {likes}
+            </button>
+            <span className="flex items-center text-sm">
+              <MessageCircle className="w-4 h-4 mr-1" />
+              {views}k
+            </span>
           </div>
         </div>
       </div>
