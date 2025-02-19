@@ -1,91 +1,19 @@
 "use client";
 
-
-import { getImageByOffset } from '@/API/unspalsh';
 import { Button } from '@/components/Button';
 import { FilterBar } from '@/components/FilterBar';
 import { GalleryItem } from '@/components/GalleryItem';
 import { TGalleryItem } from '@/lib/types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const ITEMS_PER_PAGE = 8;
-const TOTAL_ITEMS = 24; // Total items to cache
+const TOTAL_ITEMS = 30;
 
 function App() {
   const [galleryItems, setGalleryItems] = useState<TGalleryItem[]>([]);
-  const [cachedItems, setCachedItems] = useState<TGalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-
-  const fetchAndCacheItems = async () => {
-    try {
-      setLoading(true);
-      
-      // Check if we have enough cached items
-      if (cachedItems.length < TOTAL_ITEMS) {
-        const remainingItems = TOTAL_ITEMS - cachedItems.length;
-        const batchSize = Math.min(remainingItems, ITEMS_PER_PAGE);
-        
-        const promises = Array.from(
-          { length: batchSize }, 
-          (_, i) => getImageByOffset(cachedItems.length + i)
-        );
-        
-        const responses = await Promise.all(promises);
-        
-        const newItems: TGalleryItem[] = responses.flatMap(_response => {
-          // loop through the _response and return the data
-          return _response.data.map((response: {
-            id: string;
-            urls: { regular: string };
-            alt_description: string;
-            description: string;
-            user: { username: string };
-            likes: number;
-          }) => ({
-            id: response.id,
-            image: response.urls.regular,
-            alt_description: response.alt_description || 'Gallery image',
-            description: response.description || '',
-            username: response.user.username,
-            data: [{
-              id: response.id,
-              likedBy: Array.from({ length: response.likes || 0 }, (_, i) => `user${i + 1}`)
-            }]
-          }));
-        });
-
-        const updatedCache = [...cachedItems, ...newItems];
-        setCachedItems(updatedCache);
-        
-        // Store in localStorage
-        localStorage.setItem('galleryCache', JSON.stringify(updatedCache));
-      }
-    } catch (err) {
-      setError('Failed to load gallery items. Please try again later.');
-      console.error('Error fetching gallery items:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Load cached items from localStorage on initial mount
-  useEffect(() => {
-    const cached = localStorage.getItem('galleryCache');
-    if (cached) {
-      const parsedCache = JSON.parse(cached);
-      setCachedItems(parsedCache);
-    }
-    fetchAndCacheItems();
-  }, []);
-
-  // Update displayed items when page or cache changes
-  useEffect(() => {
-    const startIndex = (page - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    setGalleryItems(cachedItems.slice(startIndex, endIndex));
-  }, [page, cachedItems]);
 
   const totalPages = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
 

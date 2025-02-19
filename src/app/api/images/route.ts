@@ -1,21 +1,27 @@
+"use client";
+
 import { getImageByOffset } from "@/API/unspalsh";
 import { TGalleryItem } from "@/lib/types";
 import { Level } from "level";
-import { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request:NextRequest) {
-    const db = new Level<string, any>("./db", {valueEncoding: "json"});
-
+export async function GET() {
+    const db = new Level<string, TGalleryItem[]>("./db", {valueEncoding: "json"});
 
     let images :TGalleryItem[];
 
 
-    try{
-        images = await db.get("images");
-    }catch( error ){
-        images = [];
+    images = await db.get("images");
+
+    if (images.length < 30) {
+        for (let i = 0; i < 3; i++) {
+            await getImageByOffset(i)
+                .then((res) => {
+                    images = images.concat(res.data);
+                });
+        }
+        await db.put("images", images);
     }
-    if(images.length < 30){
-        await getImageByOffset(request.nextUrl.searchParams.get("offset") as number)
-    }
+
+    return NextResponse.json(images);
 }

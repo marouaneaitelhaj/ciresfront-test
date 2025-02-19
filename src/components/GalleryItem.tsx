@@ -1,15 +1,9 @@
+"use client";
+
 import React, { useState } from 'react';
 import { Heart, MessageCircle, Bookmark } from 'lucide-react';
 import { Level } from "level";
-
-type PostProps = {
-  image: string;
-  id: string;
-  alt_description: string;
-  description: string;
-  data: Array<{ id: string; likedBy: string[] }>;
-  username?: string;
-};
+import { TGalleryItem } from '@/lib/types';
 
 export function GalleryItem({ 
   image, 
@@ -18,7 +12,7 @@ export function GalleryItem({
   description, 
   data, 
   username 
-}: PostProps) {
+}: TGalleryItem) {
   const initialLikes = data.find(item => item.id === id)?.likedBy.length || 0;
   const [liked, setLiked] = useState<boolean>(false);
   const [likes, setLikes] = useState<number>(initialLikes);
