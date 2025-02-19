@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, MessageCircle } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark } from 'lucide-react';
 
 type PostProps = {
   image: string;
@@ -19,37 +19,52 @@ export function GalleryItem({
   username 
 }: PostProps) {
   const likes = data.find(item => item.id === id)?.likedBy.length || 0;
+  const views = Math.floor(Math.random() * 50) + 10; // Simulated views in thousands
 
   return (
-    <div className="group relative rounded-lg overflow-hidden bg-white">
+    <div className="group relative rounded-xl overflow-hidden  shadow-sm hover:shadow-md transition-shadow duration-300">
+      {/* Save button */}
+      <button className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white">
+        <Bookmark className="w-4 h-4 text-gray-700" />
+      </button>
+
+      {/* Image container */}
       <div className="aspect-w-16 aspect-h-12 relative">
         <img
           src={image}
           alt={alt_description}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-[250px] object-cover"
         />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/60" />
       </div>
       
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
-        <div className="flex items-center justify-between">
+      {/* Content overlay */}
+      <div className="p-3">
+        {/* User info and stats */}
+        <div className="flex items-center justify-between text-black">
           <div className="flex items-center space-x-2">
-            {username && (
-              <span className="text-sm font-medium text-white">
-                {username}
-              </span>
-            )}
+        <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-medium">
+          {username?.[0]?.toUpperCase() || 'U'}
+        </div>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium leading-tight">
+            {username || 'Anonymous'}
+          </span>
+          <span className="text-xs text-black/80">
+            {description.slice(0, 20)}{description.length > 20 ? '...' : ''}
+          </span>
+        </div>
           </div>
           
-          <div className="flex items-center space-x-3 text-white/80">
-            <span className="flex items-center text-sm">
-              <Heart className="w-4 h-4 mr-1" />
-              {likes}
-            </span>
-            <span className="flex items-center text-sm">
-              <MessageCircle className="w-4 h-4 mr-1" />
-              {description.length}
-            </span>
+          <div className="flex items-center space-x-3 text-black/90">
+        <span className="flex items-center text-sm">
+          <Heart className="w-4 h-4 mr-1" />
+          {likes}
+        </span>
+        <span className="flex items-center text-sm">
+          <MessageCircle className="w-4 h-4 mr-1" />
+          {views}k
+        </span>
           </div>
         </div>
       </div>
