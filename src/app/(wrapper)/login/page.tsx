@@ -6,13 +6,18 @@ import { Checkbox } from "@/components/Checkbox";
 import { Input } from "@/components/Input";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from "react-toastify";
 import { loginSchema } from "@/lib/schemas";
 import type { z } from 'zod';
 import { ToggleLeft as Google } from 'lucide-react';
+import { Login } from "@/API/login";
+import { TloginRequest } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-export default function Login() {
+export default function LoginPage() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -23,9 +28,15 @@ export default function Login() {
       remember: false,
     },
   });
-  const onSubmit = async (data: LoginForm) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data);
+  const onSubmit = async (data: TloginRequest) => {
+    try{
+        const result = (await Login(data)).data;
+        console.log(result.token);
+        document.cookie = `token=${result.token}; path=/`
+        router.push("/");
+    }catch(error:any){
+        toast.error(error?.response.data.message);
+    }
   };
   return (
     <div className="min-h-screen flex">
@@ -39,12 +50,12 @@ export default function Login() {
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
             <div className="space-y-4">
               <Input
-                {...register('email')}
-                id="email"
-                label="Email"
-                type="email"
-                error={errors.email}
-                placeholder="Enter your email"
+                {...register('username')}
+                id="username"
+                label="Username"
+                type="username"
+                error={errors.username}
+                placeholder="Enter your username"
               />
 
               <Input
