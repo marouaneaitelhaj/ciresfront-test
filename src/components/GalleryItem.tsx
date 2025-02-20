@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Heart, MessageCircle, Bookmark } from 'lucide-react';
-import { Level } from "level";
 import { TGalleryItem } from '@/lib/types';
 
 export function GalleryItem({ 
@@ -16,7 +15,6 @@ export function GalleryItem({
   const initialLikes = data.find(item => item.id === id)?.likedBy.length || 0;
   const [liked, setLiked] = useState<boolean>(false);
   const [likes, setLikes] = useState<number>(initialLikes);
-  const db = new Level<string, any>("./db", {valueEncoding: "json"});
   const views = Math.floor(Math.random() * 50) + 10; // Simulated views in thousands
 
   const onLike = async () => {

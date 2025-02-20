@@ -2,11 +2,11 @@
 
 import { getImageByOffset } from "@/API/unspalsh";
 import { TGalleryItem } from "@/lib/types";
-import { Level } from "level";
+import { ClassicLevel } from "classic-level";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-    const db = new Level<string, TGalleryItem[]>("./db", {valueEncoding: "json"});
+    const db = new ClassicLevel<string, TGalleryItem[]>("./db", {valueEncoding: "json"});
 
     let images :TGalleryItem[];
 

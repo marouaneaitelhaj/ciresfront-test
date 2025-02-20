@@ -1,10 +1,11 @@
 "use client";
 
+import { getImageByOffset } from '@/API/images';
 import { Button } from '@/components/Button';
 import { FilterBar } from '@/components/FilterBar';
 import { GalleryItem } from '@/components/GalleryItem';
 import { TGalleryItem } from '@/lib/types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const ITEMS_PER_PAGE = 8;
 const TOTAL_ITEMS = 30;
@@ -14,6 +15,10 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    getImageByOffset()
+  }, []);
 
   const totalPages = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
 
