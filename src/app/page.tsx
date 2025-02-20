@@ -5,23 +5,15 @@ import { getImageByOffset } from '@/API/unspalsh';
 import { Button } from '@/components/Button';
 import { FilterBar } from '@/components/FilterBar';
 import { GalleryItem } from '@/components/GalleryItem';
+import { TGalleryItem } from '@/lib/types';
 import React, { useEffect, useState } from 'react';
-
-type GalleryItem = {
-  id: string;
-  image: string;
-  alt_description: string;
-  description: string;
-  data: Array<{ id: string; likedBy: string[] }>;
-  username?: string;
-};
 
 const ITEMS_PER_PAGE = 8;
 const TOTAL_ITEMS = 24; // Total items to cache
 
 function App() {
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
-  const [cachedItems, setCachedItems] = useState<GalleryItem[]>([]);
+  const [galleryItems, setGalleryItems] = useState<TGalleryItem[]>([]);
+  const [cachedItems, setCachedItems] = useState<TGalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -42,7 +34,7 @@ function App() {
         
         const responses = await Promise.all(promises);
         
-        const newItems: GalleryItem[] = responses.flatMap(_response => {
+        const newItems: TGalleryItem[] = responses.flatMap(_response => {
           // loop through the _response and return the data
           return _response.data.map((response: {
             id: string;
